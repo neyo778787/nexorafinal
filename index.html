@@ -4,6 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="light only">
     <title>Nexora Creations — Premium Digital Experience</title>
     <link
         href="https://fonts.googleapis.com/css2?family=Outfit:wght@200;300;400;500;600;700;800;900&family=Inter:wght@300;400;500&display=swap"
@@ -15,6 +16,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.8.1/vanilla-tilt.min.js"></script>
     <style>
         :root {
+            color-scheme: light only;
             --bg: #ffffff;
             --surface: rgba(255, 255, 255, 0.7);
             --surface-light: #f8fafc;
@@ -125,18 +127,21 @@
             background-image: linear-gradient(to right, rgba(0,0,0,0.03) 1px, transparent 1px), linear-gradient(to bottom, rgba(0,0,0,0.03) 1px, transparent 1px);
             background-size: 40px 40px;
             pointer-events: none;
+            transform: translateZ(0);
+            will-change: transform;
         }
 
         .bg-glow {
             position: fixed;
             top: -20%;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%) translateZ(0);
             width: 80vw;
             height: 80vw;
             background: radial-gradient(circle, rgba(79, 70, 229, 0.06) 0%, rgba(147, 51, 234, 0.04) 30%, transparent 70%);
             pointer-events: none;
             z-index: 0;
+            will-change: transform;
         }
 
         /* Navigation */
@@ -407,7 +412,6 @@
 
         .service-card {
             background: var(--surface);
-            backdrop-filter: blur(12px);
             border: 1px solid var(--border);
             padding: 40px;
             border-radius: 12px;
@@ -1177,7 +1181,7 @@
             }
 
             .hero-title {
-                font-size: 3.5rem;
+                font-size: clamp(2rem, 12vw, 3.5rem);
             }
 
             .hero-btns {
@@ -1302,10 +1306,22 @@
 
     <!-- Mobile Bottom Nav -->
     <div class="mobile-bottom-nav">
-        <button onclick="lenis.scrollTo('#services')"><span>Services</span></button>
-        <button onclick="lenis.scrollTo('#work')"><span>Work</span></button>
-        <button onclick="lenis.scrollTo('#testimonials')"><span>Reviews</span></button>
-        <button onclick="lenis.scrollTo('#contact')"><span>Contact</span></button>
+        <button onclick="lenis.scrollTo('#services')">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span>Services</span>
+        </button>
+        <button onclick="lenis.scrollTo('#work')">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path></svg>
+            <span>Work</span>
+        </button>
+        <button onclick="lenis.scrollTo('#testimonials')">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+            <span>Reviews</span>
+        </button>
+        <button onclick="openModal()">
+            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>
+            <span>Contact</span>
+        </button>
     </div>
 
     <!-- Hero Section -->
@@ -1649,12 +1665,7 @@
         </div>
         <div class="footer-bottom gs-reveal">
             <div>&copy; 2025 Nexora Creations. All rights reserved.</div>
-            <div class="socials">
-                <a href="#">In</a>
-                <a href="#">Tw</a>
-                <a href="#">Ig</a>
-                <a href="#">Be</a>
-            </div>
+
         </div>
     </footer>
 
@@ -1719,14 +1730,16 @@
         gsap.ticker.add((time) => { lenis.raf(time * 1000); });
         gsap.ticker.lagSmoothing(0, 0);
 
-        // Initialize VanillaTilt for 3D Cards
-        VanillaTilt.init(document.querySelectorAll(".service-card, .work-card, .testi-card"), {
-            max: 12,
-            speed: 400,
-            glare: true,
-            "max-glare": 0.15,
-            scale: 1.02
-        });
+        // Initialize VanillaTilt for 3D Cards only on desktop
+        if (window.innerWidth > 768) {
+            VanillaTilt.init(document.querySelectorAll(".service-card, .work-card, .testi-card"), {
+                max: 12,
+                speed: 400,
+                glare: true,
+                "max-glare": 0.15,
+                scale: 1.02
+            });
+        }
 
         // Custom Cursor - Hardware Accelerated
         const cursorDot = document.getElementById('cursorDot');
